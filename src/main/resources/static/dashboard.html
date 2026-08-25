@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background-color: #f4f4f4; }
+        .card { background: white; padding: 30px; display: inline-block; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        button { padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Welcome to Srimathi Mart! 🎉</h1>
+    <p>"you were successfully login"</p>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+    function logout() {
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
