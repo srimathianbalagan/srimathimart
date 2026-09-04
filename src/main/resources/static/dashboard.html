@@ -2,26 +2,556 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Srimathi Mart - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background-color: #f4f4f4; }
-        .card { background: white; padding: 30px; display: inline-block; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        button { padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1e1b4b 0%, #1e1035 100%);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .brand i {
+            font-size: 24px;
+            background: #6366f1;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .brand-text h2 { font-size: 18px; font-weight: 700; }
+        .brand-text p { font-size: 12px; color: #a5b4fc; }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: #c7d2fe;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active a, .nav-item a:hover {
+            background-color: #4f46e5;
+            color: #fff;
+        }
+
+        .promo-card {
+            background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .promo-card h4 { font-size: 14px; margin-bottom: 6px; }
+        .promo-card p { font-size: 11px; color: #c7d2fe; margin-bottom: 12px; }
+        .promo-card button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 24px 32px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .welcome h1 { font-size: 22px; color: #1e293b; }
+        .welcome p { font-size: 13px; color: #64748b; }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            background: #fff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            width: 320px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            padding: 6px 12px;
+            border-radius: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: #fff;
+            padding: 18px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .metric-info h3 { font-size: 18px; color: #0f172a; margin-top: 2px; }
+        .metric-info p { font-size: 12px; color: #64748b; }
+        .trend { font-size: 11px; margin-top: 4px; font-weight: 600; }
+        .trend.up { color: #10b981; }
+
+        /* Dashboard Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h3 { font-size: 16px; color: #1e293b; }
+
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full { grid-column: span 2; }
+
+        .form-group label { font-size: 12px; font-weight: 600; color: #475569; }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .btn-submit {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .cat-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+        }
+
+        .cat-item img {
+            width: 100%;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .cat-item p { font-size: 11px; font-weight: 600; margin-top: 6px; color: #334155; }
+
+        /* Product Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 11px;
+            color: #64748b;
+            padding: 10px 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td {
+            padding: 12px 8px;
+            font-size: 13px;
+            border-bottom: 1px solid #f8fafc;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #dcfce7; color: #15803d; }
+        .badge-cat { background: #e0e7ff; color: #4338ca; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Welcome to Srimathi Mart! 🎉</h1>
-    <p>"you were successfully login"</p>
-    <button onclick="logout()">Logout</button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <div class="brand-text">
+                    <h2>Srimathi Mart</h2>
+                    <p>Admin Dashboard</p>
+                </div>
+            </div>
+           <ul class="nav-menu">
+    <li class="nav-item active"><a href="#" onclick="switchTab(event, 'all')"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+    <li class="nav-item"><a href="#" onclick="switchTab(event, 'add-product')"><i class="fa-solid fa-circle-plus"></i> Add Product</a></li>
+    <li class="nav-item"><a href="#" onclick="switchTab(event, 'products')"><i class="fa-solid fa-box"></i> Products</a></li>
+    <li class="nav-item"><a href="#" onclick="switchTab(event, 'categories')"><i class="fa-solid fa-border-all"></i> Categories</a></li>
+    <li class="nav-item"><a href="#"><i class="fa-solid fa-cart-shopping"></i> Orders</a></li>
+    <li class="nav-item"><a href="#"><i class="fa-solid fa-users"></i> Customers</a></li>
+    <li class="nav-item"><a href="#"><i class="fa-solid fa-cart-flatbed"></i> Cart</a></li>
+    <li class="nav-item"><a href="#"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+</ul>
+        </div>
+
+        <div class="promo-card">
+            <h4>Grow your business</h4>
+            <p>Add more products and increase your sales!</p>
+            <button>View Reports</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="header">
+            <div class="welcome">
+                <h1>Welcome back, Srimathi! 👋</h1>
+                <p>Here's what's happening with your store today.</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
+                    <input type="text" placeholder="Search products, orders, customers...">
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">S</div>
+                    <div>
+                        <p style="font-size: 12px; font-weight: bold;">Srimathi</p>
+                        <p style="font-size: 10px; color: #64748b;">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #f3e8ff; color: #a855f7;"><i class="fa-solid fa-box"></i></div>
+                <div class="metric-info">
+                    <p>Total Products</p>
+                    <h3>512</h3>
+                    <p class="trend up">↑ 18% this month</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #dcfce7; color: #22c55e;"><i class="fa-solid fa-clipboard-list"></i></div>
+                <div class="metric-info">
+                    <p>Total Orders</p>
+                    <h3>156</h3>
+                    <p class="trend up">↑ 14% this month</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #ffedd5; color: #f97316;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                <div class="metric-info">
+                    <p>Total Sales</p>
+                    <h3>₹ 3,45,000</h3>
+                    <p class="trend up">↑ 22% this month</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #dbeafe; color: #3b82f6;"><i class="fa-solid fa-users"></i></div>
+                <div class="metric-info">
+                    <p>Customers</p>
+                    <h3>680</h3>
+                    <p class="trend up">↑ 12% this month</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: #fce7f3; color: #ec4899;"><i class="fa-solid fa-star"></i></div>
+                <div class="metric-info">
+                    <p>Reviews</p>
+                    <h3>4.8/5</h3>
+                    <p class="trend up">↑ 8% this month</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Main Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column: Add Product & Cart -->
+            <div>
+                <div class="card" id="add-product-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-plus-circle" style="color: #4f46e5;"></i> Add New Product</h3>
+                    </div>
+                    <form id="productForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Product Name</label>
+                                <input type="text" id="pName" placeholder="e.g., Classic Men Shirt" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Price (₹)</label>
+                                <input type="number" id="pPrice" placeholder="e.g., 999" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="pCategory">
+                                    <option>Select Category</option>
+                                    <option value="Men">Men</option>
+                                    <option value="Women">Women</option>
+                                    <option value="Kids">Kids</option>
+                                    <option value="Dresses">Dresses</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Sub Category</label>
+                                <select>
+                                    <option>Select Sub Category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Stock Quantity</label>
+                                <input type="number" id="pStock" placeholder="e.g., 50" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Discount (%)</label>
+                                <input type="number" placeholder="e.g., 10">
+                            </div>
+                            <div class="form-group full">
+                                <label>Description</label>
+                                <textarea id="pDesc" rows="3" placeholder="Enter product description..."></textarea>
+                            </div>
+                            <div class="form-group full">
+                                <label>Product Images</label>
+                                <div class="upload-box">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px;"></i>
+                                    <p style="font-size: 12px; margin-top: 4px;">Click to upload images</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit">+ Add Product</button>
+                    </form>
+                </div>
+
+                <!-- My Shopping Cart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-cart-shopping" style="color: #4f46e5;"></i> My Shopping Cart</h3>
+                    </div>
+                    <div id="cartList">
+                        <p style="color: #64748b; font-size: 13px;">Cart Details loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Categories & Product List -->
+            <div>
+                <!-- Categories -->
+                <div class="card" id="categories-card">
+                    <div class="card-header">
+                        <h3>Categories</h3>
+                    </div>
+                    <div class="category-grid">
+    <div class="cat-item" onclick="filterByCategory('Men')"><p>Men</p></div>
+    <div class="cat-item" onclick="filterByCategory('Women')"><p>Women</p></div>
+    <div class="cat-item" onclick="filterByCategory('Kids')"><p>Kids</p></div>
+    <div class="cat-item" onclick="filterByCategory('Dresses')"><p>Dresses</p></div>
+    <div class="cat-item" onclick="filterByCategory('Tops')"><p>Tops</p></div>
+    <div class="cat-item" onclick="filterByCategory('Bottoms')"><p>Bottoms</p></div>
+    <div class="cat-item" onclick="filterByCategory('Ethnic Wear')"><p>Ethnic Wear</p></div>
+    <div class="cat-item" onclick="filterByCategory('Footwear')"><p>Footwear</p></div>
+    <div class="cat-item" onclick="filterByCategory('Bags')"><p>Bags</p></div>
+    <div class="cat-item" onclick="filterByCategory('Beauty')"><p>Beauty</p></div>
 </div>
 
-<script>
-    function logout() {
-        window.location.href = "login.html";
-    }
-</script>
+                </div>
 
+                <!-- Product List -->
+               <div class="card" id="products-card">
+                    <div class="card-header">
+                        <h3>Product List</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PRODUCT</th>
+                                <th>CATEGORY</th>
+                                <th>PRICE</th>
+                                <th>STOCK</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productList">
+                            <!-- Backend Data directly inserts here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+   <!-- Products Section (Products Tab கிளிக் செய்யும்போது இதுதான் தெரியும்) -->
+<div id="products" class="tab-content" style="display: none;">
+    <h2>All Products</h2>
+    <table border="1" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price (₹)</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody id="productList">
+            <!-- JavaScript மூலம் Products விவரங்கள் இங்கே சேர்க்கப்படும் -->
+        </tbody>
+    </table>
+</div>
+
+    <script src="script.js"></script>
 </body>
 </html>
+

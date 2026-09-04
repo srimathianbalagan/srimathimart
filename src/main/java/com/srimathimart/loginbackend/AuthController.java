@@ -1,6 +1,5 @@
 package com.srimathimart.loginbackend;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -8,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*") // Frontend (HTML/JS) உடன் இணையும்படி வசதி செய்கிறது
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/login")
     public String login(@RequestBody User loginUser) {
