@@ -96,11 +96,13 @@
         }
 
         /* Main Content Styles */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 24px 32px;
-        }
+.main-content {
+    margin-left: 260px;
+    flex: 1;
+    padding: 30px;
+}
+
+
 
         /* Header */
         .header {
@@ -477,7 +479,7 @@
                 </div>
 
                 <!-- My Shopping Cart -->
-                <div class="card">
+               <div class="card" id="cart-section">
                     <div class="card-header">
                         <h3><i class="fa-solid fa-cart-shopping" style="color: #4f46e5;"></i> My Shopping Cart</h3>
                     </div>
@@ -633,89 +635,317 @@
     </table>
 </div>
 
+<!-- ORDERS SECTION -->
+<div id="orders" class="tab-content" style="display: none;">
+
+    <div class="card" style="padding: 25px;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+                <h2 style="margin:0;">Orders</h2>
+                <p style="color:#64748b; margin-top:5px;">
+                    Manage all customer orders
+                </p>
+            </div>
+
+            <div>
+                <span class="badge badge-active">
+                    All Orders
+                </span>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+
+            <table style="width:100%; border-collapse:collapse;">
+
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="ordersList">
+
+                    <tr>
+                        <td>#ORD001</td>
+                        <td>Sample Customer</td>
+                        <td>Sample Product</td>
+                        <td>₹999</td>
+                        <td>17 Sep 2026</td>
+                        <td>Paid</td>
+                        <td>
+                            <span class="badge badge-active">
+                                Delivered
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CUSTOMERS SECTION -->
+<div id="customers" class="tab-content" style="display: none;">
+
+    <div class="card" style="padding: 25px;">
+
+        <h2>Customers</h2>
+
+        <p style="color:#64748b; margin-bottom:20px;">
+            Manage registered customers
+        </p>
+
+        <div style="overflow-x:auto;">
+
+            <table style="width:100%; border-collapse:collapse;">
+
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Total Orders</th>
+                        <th>Total Spent</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="customersList">
+
+                    <tr>
+                        <td>#CUS001</td>
+                        <td>Sample Customer</td>
+                        <td>customer@gmail.com</td>
+                        <td>9876543210</td>
+                        <td>3</td>
+                        <td>₹2,999</td>
+                        <td>
+                            <span class="badge badge-active">
+                                Active
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- REPORTS SECTION -->
+<div id="reports" class="tab-content" style="display: none;">
+
+    <div class="card" style="padding: 25px;">
+
+        <h2>Reports</h2>
+
+        <p style="color:#64748b; margin-bottom:20px;">
+            View sales and business reports
+        </p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:20px;">
+
+            <div class="card" style="padding:20px;">
+                <p style="color:#64748b;">Total Sales</p>
+                <h2 id="reportSales">₹0</h2>
+            </div>
+
+            <div class="card" style="padding:20px;">
+                <p style="color:#64748b;">Total Orders</p>
+                <h2 id="reportOrders">0</h2>
+            </div>
+
+            <div class="card" style="padding:20px;">
+                <p style="color:#64748b;">Total Customers</p>
+                <h2 id="reportCustomers">0</h2>
+            </div>
+
+            <div class="card" style="padding:20px;">
+                <p style="color:#64748b;">Total Products</p>
+                <h2 id="reportProducts">0</h2>
+            </div>
+
+        </div>
+
+        <div style="margin-top:25px;">
+
+            <h3>Sales Summary</h3>
+
+            <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+
+                <thead>
+                    <tr>
+                        <th>Report</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Total Revenue</td>
+                        <td id="totalRevenue">₹0</td>
+                    </tr>
+
+                    <tr>
+                        <td>Completed Orders</td>
+                        <td id="completedOrders">0</td>
+                    </tr>
+
+                    <tr>
+                        <td>Pending Orders</td>
+                        <td id="pendingOrders">0</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
   <!-- dashboard.html-ன் கடைசியில் </body> -க்கு மேலே சேர்க்கவும் -->
     <script>
-        // 1. Sidebar Tabs மாற்றுவதற்கான Function
         function switchTab(event, tabName) {
-            if (event) event.preventDefault();
+    if (event) event.preventDefault();
 
-            // Active Class-ஐ Sidebar பட்டன்களில் மாற்றுதல்
-            let navItems = document.querySelectorAll('.nav-menu li');
-            navItems.forEach(item => item.classList.remove('active'));
-            if (event && event.currentTarget) {
-                event.currentTarget.parentElement.classList.add('active');
-            }
+    // Active sidebar item
+    let navItems = document.querySelectorAll('.nav-menu li');
+    navItems.forEach(item => item.classList.remove('active'));
 
-            // Cards/Sections-ஐ எடுத்தல்
-            let addProductCard = document.getElementById('add-product-card');
-            let categoriesCard = document.getElementById('categories-card');
-            let productsCard = document.getElementById('products-card');
-            let productsTab = document.getElementById('products');
+    if (event && event.currentTarget) {
+        event.currentTarget.parentElement.classList.add('active');
+    }
 
-            // கிளிக் செய்யும் Tab-க்கு ஏற்ப பகுதிகளைக் காட்டுதல்/மறைத்தல்
-            if (tabName === 'all') {
-                if(addProductCard) addProductCard.style.display = 'block';
-                if(categoriesCard) categoriesCard.style.display = 'block';
-                if(productsCard) productsCard.style.display = 'block';
-                if(productsTab) productsTab.style.display = 'none';
-                filterByCategory('All');
-            } 
-            else if (tabName === 'add-product') {
-                if(addProductCard) addProductCard.style.display = 'block';
-                if(categoriesCard) categoriesCard.style.display = 'none';
-                if(productsCard) productsCard.style.display = 'none';
-                if(productsTab) productsTab.style.display = 'none';
-            } 
-            else if (tabName === 'products') {
-                if(addProductCard) addProductCard.style.display = 'none';
-                if(categoriesCard) categoriesCard.style.display = 'none';
-                if(productsCard) productsCard.style.display = 'none';
-                if(productsTab) productsTab.style.display = 'block';
-                filterByCategory('All');
-            } 
-            else if (tabName === 'categories') {
-                if(addProductCard) addProductCard.style.display = 'none';
-                if(categoriesCard) categoriesCard.style.display = 'block';
-                if(productsCard) productsCard.style.display = 'block';
-                if(productsTab) productsTab.style.display = 'none';
-            }
-            else if (tabName === 'cart') {
-    if(addProductCard) addProductCard.style.display = 'none';
-    if(categoriesCard) categoriesCard.style.display = 'none';
-    if(productsCard) productsCard.style.display = 'none';
-    if(productsTab) productsTab.style.display = 'none';
+    // Get all sections
+    let addProductCard = document.getElementById('add-product-card');
+    let categoriesCard = document.getElementById('categories-card');
+    let productsCard = document.getElementById('products-card');
+    let productsTab = document.getElementById('products');
 
-    document.getElementById('cart').style.display = 'block';
-}
+    let cartSection = document.getElementById('cart-section');
+    let ordersSection = document.getElementById('orders');
+    let customersSection = document.getElementById('customers');
+    let reportsSection = document.getElementById('reports');
 
-else if (tabName === 'orders') {
-    if(addProductCard) addProductCard.style.display = 'none';
-    if(categoriesCard) categoriesCard.style.display = 'none';
-    if(productsCard) productsCard.style.display = 'none';
-    if(productsTab) productsTab.style.display = 'none';
+    // Hide everything first
+    if (addProductCard) addProductCard.style.display = 'none';
+    if (categoriesCard) categoriesCard.style.display = 'none';
+    if (productsCard) productsCard.style.display = 'none';
+    if (productsTab) productsTab.style.display = 'none';
+    if (cartSection) cartSection.style.display = 'none';
+    if (ordersSection) ordersSection.style.display = 'none';
+    if (customersSection) customersSection.style.display = 'none';
+    if (reportsSection) reportsSection.style.display = 'none';
 
-    document.getElementById('orders').style.display = 'block';
-}
 
-else if (tabName === 'customers') {
-    if(addProductCard) addProductCard.style.display = 'none';
-    if(categoriesCard) categoriesCard.style.display = 'none';
-    if(productsCard) productsCard.style.display = 'none';
-    if(productsTab) productsTab.style.display = 'none';
+    // =========================
+    // DASHBOARD
+    // =========================
+    if (tabName === 'all') {
 
-    document.getElementById('customers').style.display = 'block';
-}
+        if (addProductCard) addProductCard.style.display = 'block';
+        if (categoriesCard) categoriesCard.style.display = 'block';
+        if (productsCard) productsCard.style.display = 'block';
 
-else if (tabName === 'reports') {
-    if(addProductCard) addProductCard.style.display = 'none';
-    if(categoriesCard) categoriesCard.style.display = 'none';
-    if(productsCard) productsCard.style.display = 'none';
-    if(productsTab) productsTab.style.display = 'none';
+        filterByCategory('All');
+    }
 
-    document.getElementById('reports').style.display = 'block';
-}
 
+    // =========================
+    // ADD PRODUCT
+    // =========================
+    else if (tabName === 'add-product') {
+
+        if (addProductCard) addProductCard.style.display = 'block';
+    }
+
+
+    // =========================
+    // PRODUCTS
+    // =========================
+    else if (tabName === 'products') {
+
+        if (productsTab) productsTab.style.display = 'block';
+
+        filterByCategory('All');
+    }
+
+
+    // =========================
+    // CATEGORIES
+    // =========================
+    else if (tabName === 'categories') {
+
+        if (categoriesCard) categoriesCard.style.display = 'block';
+        if (productsCard) productsCard.style.display = 'block';
+    }
+
+
+    // =========================
+    // CART
+    // =========================
+    else if (tabName === 'cart') {
+
+        if (cartSection) {
+            cartSection.style.display = 'block';
         }
+
+        displayCart();
+    }
+
+
+    // =========================
+    // ORDERS
+    // =========================
+    else if (tabName === 'orders') {
+
+        if (ordersSection) {
+            ordersSection.style.display = 'block';
+        }
+    }
+
+
+    // =========================
+    // CUSTOMERS
+    // =========================
+    else if (tabName === 'customers') {
+
+        if (customersSection) {
+            customersSection.style.display = 'block';
+        }
+    }
+
+
+    // =========================
+    // REPORTS
+    // =========================
+    else if (tabName === 'reports') {
+
+        if (reportsSection) {
+            reportsSection.style.display = 'block';
+        }
+    }
+}
+
 // 1. Sub-categories டேட்டா
 const subCategoriesData = {
     'Men': ['Shirts', 'T-Shirts', 'Jeans', 'Jackets', 'Footwear', 'Watches'],
