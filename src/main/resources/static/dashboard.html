@@ -1559,6 +1559,60 @@ function buyNow(productName, price) {
     placeOrderForCustomer(customer, productName, price);
 }
 
+function placeOrderForCustomer(customer, productName, price) {
+
+    // Create new order
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let newOrder = {
+        id: "ORD" + Date.now(),
+        customer: customer.name,
+        product: productName,
+        total: price,
+        date: new Date().toLocaleDateString("en-IN"),
+        payment: "Pending",
+        status: "Pending"
+    };
+
+    orders.push(newOrder);
+
+    // Save order
+    localStorage.setItem(
+        "srimathiOrders",
+        JSON.stringify(orders)
+    );
+
+    // Update customer details
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    let index = customers.findIndex(
+        c => c.id === customer.id
+    );
+
+    if (index !== -1) {
+        customers[index].totalOrders =
+            (customers[index].totalOrders || 0) + 1;
+
+        customers[index].totalSpent =
+            (customers[index].totalSpent || 0) + price;
+    }
+
+    // Save customer
+    localStorage.setItem(
+        "srimathiCustomers",
+        JSON.stringify(customers)
+    );
+
+    // Refresh pages/data
+    displayOrders();
+    displayCustomers();
+    updateTotalOrders();
+
+    alert("Your order is placed!");
+}
+
 // ===============================
 // DISPLAY ORDERS
 // ===============================
@@ -1682,7 +1736,25 @@ function addCustomer() {
     document.getElementById("customerAddress").value = "";
 
     hideAddCustomerForm();
+// Check for pending order
+let pendingOrder =
+    JSON.parse(localStorage.getItem("pendingOrder"));
 
+if (pendingOrder) {
+
+    localStorage.removeItem("pendingOrder");
+
+    let addedCustomer =
+        customers.find(c => c.id === newCustomer.id);
+
+    placeOrderForCustomer(
+        addedCustomer,
+        pendingOrder.product,
+        pendingOrder.price
+    );
+
+    return;
+}
     alert("Customer added successfully!");
 }
 // ===============================
