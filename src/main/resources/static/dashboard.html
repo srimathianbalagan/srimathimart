@@ -1902,6 +1902,70 @@ orders.forEach(order => {
         </tr>
     `;
 });
+function deleteOrder(id) {
+
+    let confirmDelete = confirm(
+        "Are you sure you want to delete this order?"
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let deletedOrder =
+        orders.find(order => order.id === id);
+
+    orders = orders.filter(
+        order => order.id !== id
+    );
+
+    localStorage.setItem(
+        "srimathiOrders",
+        JSON.stringify(orders)
+    );
+
+    if (deletedOrder) {
+
+        let customers =
+            JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+        let index = customers.findIndex(
+            customer =>
+                customer.name.toLowerCase() ===
+                deletedOrder.customer.toLowerCase()
+        );
+
+        if (index !== -1) {
+
+            customers[index].totalOrders =
+                Math.max(
+                    0,
+                    (customers[index].totalOrders || 0) - 1
+                );
+
+            customers[index].totalSpent =
+                Math.max(
+                    0,
+                    (customers[index].totalSpent || 0) -
+                    Number(deletedOrder.total || 0)
+                );
+
+            localStorage.setItem(
+                "srimathiCustomers",
+                JSON.stringify(customers)
+            );
+        }
+    }
+
+    displayOrders();
+    displayCustomers();
+    updateTotalOrders();
+
+    alert("Order deleted successfully!");
+}
 // ===============================
 // TOTAL ORDERS
 // ===============================
