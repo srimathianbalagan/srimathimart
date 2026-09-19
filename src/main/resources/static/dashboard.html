@@ -749,6 +749,7 @@
     </div>
 
 </div>
+
 <!-- REPORTS SECTION -->
 <div id="reports" class="tab-content" style="display: none;">
 
@@ -921,6 +922,8 @@
         if (ordersSection) {
             ordersSection.style.display = 'block';
         }
+        displayOrders();
+        updateTotalOrders();
     }
 
 
@@ -1066,7 +1069,7 @@ async function filterBySubCategory(mainCategory, subCategory) {
 
                 <div style="display: flex; gap: 4px;">
                    <button onclick="addToCart('${searchQuery} #${i+1}')"style="flex: 1; padding: 6px 0; border: 1px solid #4f46e5; background: white; color: #4f46e5; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">Add to Cart</button>
-                    <button onclick="alert('Buying ${searchQuery} #${i+1} Now!')" style="flex: 1; padding: 6px 0; border: none; background: #4f46e5; color: white; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">Buy Now</button>
+                    <button onclick="buyNow('${searchQuery} #${i+1}', ${discountedPrice})" style="flex: 1; padding: 6px 0; border: none; background: #4f46e5; color: white; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">Buy Now</button>
                 </div>
             </div>`;
         
@@ -1401,6 +1404,223 @@ function displayCart() {
 }
 
 displayCart();
+// ===============================
+// BUY NOW → CREATE ORDER
+// ===============================
+
+function buyNow(productName, price) {
+
+    let customerName = prompt("Enter Customer Name:");
+
+    if (!customerName || customerName.trim() === "") {
+        alert("Customer name is required!");
+        return;
+    }
+
+    let orders = JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let newOrder = {
+        id: "ORD" + Date.now(),
+        customer: customerName.trim(),
+        product: productName,
+        total: price,
+        date: new Date().toLocaleDateString("en-IN"),
+        payment: "Pending",
+        status: "Pending"
+    };
+
+    orders.push(newOrder);
+
+    localStorage.setItem(
+        "srimathiOrders",
+        JSON.stringify(orders)
+    );
+
+    displayOrders();
+    updateTotalOrders();
+
+    alert("Order placed successfully!");
+}
+
+
+// ===============================
+// DISPLAY ORDERS
+// ===============================
+
+function displayOrders() {
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let ordersList =
+        document.getElementById("ordersList");
+
+    if (!ordersList) return;
+
+    ordersList.innerHTML = "";
+
+    if (orders.length === 0) {
+
+        ordersList.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    style="text-align:center; padding:20px; color:#64748b;">
+                    No orders yet
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    orders.forEach(order => {
+
+        ordersList.innerHTML += `
+            <tr>
+                <td>#${order.id}</td>
+                <td>${order.customer}</td>
+                <td>${order.product}</td>
+                <td>₹${order.total}</td>
+                <td>${order.date}</td>
+                <td>${order.payment}</td>
+                <td>
+                    <span class="badge badge-active">
+                        ${order.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+
+// ===============================
+// TOTAL ORDERS
+// ===============================
+
+function updateTotalOrders() {
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let totalOrders =
+        document.getElementById("totalOrders");
+
+    if (totalOrders) {
+        totalOrders.textContent = orders.length;
+    }
+}
+// ===============================
+// CUSTOMERS
+// ===============================
+
+function showAddCustomerForm() {
+    document.getElementById("addCustomerForm").style.display = "block";
+}
+
+function hideAddCustomerForm() {
+    document.getElementById("addCustomerForm").style.display = "none";
+}
+// ===============================
+// ADD CUSTOMER
+// ===============================
+
+function addCustomer() {
+
+    let name = document.getElementById("customerName").value.trim();
+    let email = document.getElementById("customerEmail").value.trim();
+    let phone = document.getElementById("customerPhone").value.trim();
+    let address = document.getElementById("customerAddress").value.trim();
+
+    if (name === "" || email === "" || phone === "") {
+        alert("Please fill Name, Email and Phone!");
+        return;
+    }
+
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    let newCustomer = {
+        id: "CUS" + Date.now(),
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+        totalOrders: 0,
+        totalSpent: 0,
+        status: "Active"
+    };
+
+    customers.push(newCustomer);
+
+    localStorage.setItem(
+        "srimathiCustomers",
+        JSON.stringify(customers)
+    );
+
+    displayCustomers();
+
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerEmail").value = "";
+    document.getElementById("customerPhone").value = "";
+    document.getElementById("customerAddress").value = "";
+
+    hideAddCustomerForm();
+
+    alert("Customer added successfully!");
+}
+// ===============================
+// DISPLAY CUSTOMERS
+// ===============================
+
+function displayCustomers() {
+
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    let customersList =
+        document.getElementById("customersList");
+
+    if (!customersList) return;
+
+    customersList.innerHTML = "";
+
+    if (customers.length === 0) {
+
+        customersList.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    style="text-align:center; padding:20px; color:#64748b;">
+                    No customers yet
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    customers.forEach(customer => {
+
+        customersList.innerHTML += `
+            <tr>
+                <td>#${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.email}</td>
+                <td>${customer.phone}</td>
+                <td>${customer.totalOrders}</td>
+                <td>₹${customer.totalSpent}</td>
+                <td>
+                    <span class="badge badge-active">
+                        ${customer.status}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+
+
 function removeFromCart(id) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -1426,7 +1646,121 @@ function updateTotalProducts() {
 
 updateTotalProducts();
 
+// ===============================
+// BUY NOW → CREATE ORDER
+// ===============================
 
+function buyNow(productName, price) {
+
+    let customerName = prompt("Enter Customer Name:");
+
+    if (!customerName || customerName.trim() === "") {
+        alert("Customer name is required!");
+        return;
+    }
+
+    let orders = JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let newOrder = {
+        id: "ORD" + Date.now(),
+        customer: customerName.trim(),
+        product: productName,
+        total: price,
+        date: new Date().toLocaleDateString("en-IN"),
+        payment: "Pending",
+        status: "Pending"
+    };
+
+    orders.push(newOrder);
+
+    localStorage.setItem(
+        "srimathiOrders",
+        JSON.stringify(orders)
+    );
+
+    displayOrders();
+
+    updateTotalOrders();
+
+    alert("Order placed successfully!");
+}
+
+
+// ===============================
+// DISPLAY ORDERS
+// ===============================
+
+function displayOrders() {
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let ordersList =
+        document.getElementById("ordersList");
+
+    if (!ordersList) return;
+
+    ordersList.innerHTML = "";
+
+    if (orders.length === 0) {
+
+        ordersList.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    style="text-align:center; padding:20px; color:#64748b;">
+                    No orders yet
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    orders.forEach(order => {
+
+        ordersList.innerHTML += `
+            <tr>
+
+                <td>#${order.id}</td>
+
+                <td>${order.customer}</td>
+
+                <td>${order.product}</td>
+
+                <td>₹${order.total}</td>
+
+                <td>${order.date}</td>
+
+                <td>${order.payment}</td>
+
+                <td>
+                    <span class="badge badge-active">
+                        ${order.status}
+                    </span>
+                </td>
+
+            </tr>
+        `;
+    });
+}
+
+
+// ===============================
+// TOTAL ORDERS
+// ===============================
+
+function updateTotalOrders() {
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let totalOrders =
+        document.getElementById("totalOrders");
+
+    if (totalOrders) {
+        totalOrders.textContent = orders.length;
+    }
+}
     </script>
 </body>
 </html>
