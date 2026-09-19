@@ -1502,91 +1502,62 @@ displayCart();
 
 function buyNow(productName, price) {
 
-    // Get Customer ID
-    let customerId = prompt("Enter Customer ID:");
+    let customerName = prompt("Enter Customer Name:");
 
-    if (!customerId || customerId.trim() === "") {
-        alert("Customer ID is required!");
+    if (!customerName || customerName.trim() === "") {
+        alert("Customer name is required!");
         return;
     }
 
-    customerId = customerId.trim();
+    customerName = customerName.trim();
 
-    // Get saved customers
     let customers =
         JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
 
-    // Find customer using Customer ID
+    // Check customer by name
     let customer = customers.find(
-        c => c.id.toLowerCase() === customerId.toLowerCase()
+        c => c.name.toLowerCase() === customerName.toLowerCase()
     );
 
+    // Customer not found
     if (!customer) {
-        alert("Customer ID not found! Please check the Customer ID.");
+
+        let createNew = confirm(
+            "Customer not found!\n\n" +
+            "Click OK to Create New Customer.\n" +
+            "Click Cancel to stop the order."
+        );
+
+        if (createNew) {
+
+            // Store current product temporarily
+            localStorage.setItem(
+                "pendingOrder",
+                JSON.stringify({
+                    product: productName,
+                    price: price,
+                    customerName: customerName
+                })
+            );
+
+            // Open Customers page
+            switchTab(null, "customers");
+
+            // Open Add Customer form
+            showAddCustomerForm();
+
+            alert(
+                "Please add the customer details.\n\n" +
+                "After adding the customer, the order will continue automatically."
+            );
+        }
+
         return;
     }
 
-    // Show customer details for verification
-    let confirmCustomer = confirm(
-        "Customer Details\n\n" +
-        "Customer ID: " + customer.id + "\n" +
-        "Name: " + customer.name + "\n" +
-        "Phone: " + customer.phone + "\n" +
-        "Email: " + customer.email + "\n" +
-        "Address: " + customer.address + "\n\n" +
-        "Is this the correct customer?"
-    );
-
-    if (!confirmCustomer) {
-        alert("Order cancelled. Please check the customer details.");
-        return;
-    }
-
-    // Get existing orders
-    let orders =
-        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
-
-    // Create new order
-    let newOrder = {
-        id: "ORD" + Date.now(),
-        customerId: customer.id,
-        customer: customer.name,
-        phone: customer.phone,
-        email: customer.email,
-        address: customer.address,
-        product: productName,
-        total: price,
-        date: new Date().toLocaleDateString("en-IN"),
-        payment: "Pending",
-        status: "Pending"
-    };
-
-    orders.push(newOrder);
-
-    // Save order
-    localStorage.setItem(
-        "srimathiOrders",
-        JSON.stringify(orders)
-    );
-
-    // Update customer order details
-    customer.totalOrders = Number(customer.totalOrders || 0) + 1;
-    customer.totalSpent = Number(customer.totalSpent || 0) + Number(price);
-
-    // Save updated customer
-    localStorage.setItem(
-        "srimathiCustomers",
-        JSON.stringify(customers)
-    );
-
-    displayOrders();
-    updateTotalOrders();
-    displayCustomers();
-
-    alert("Order placed successfully!");
+    // Existing customer → place order
+    placeOrderForCustomer(customer, productName, price);
 }
-
-
 
 // ===============================
 // DISPLAY ORDERS
