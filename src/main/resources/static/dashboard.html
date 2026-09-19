@@ -702,12 +702,118 @@
 
     <div class="card" style="padding: 25px;">
 
-        <h2>Customers</h2>
+        <!-- Customer Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
 
-        <p style="color:#64748b; margin-bottom:20px;">
-            Manage registered customers
-        </p>
+            <div>
+                <h2 style="margin:0;">Customers</h2>
 
+                <p style="color:#64748b; margin-top:5px;">
+                    Manage registered customers
+                </p>
+            </div>
+
+            <!-- ADD CUSTOMER BUTTON -->
+            <button onclick="showAddCustomerForm()"
+                style="
+                    background:#4f46e5;
+                    color:white;
+                    border:none;
+                    padding:10px 16px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:600;
+                ">
+                + Add Customer
+            </button>
+
+        </div>
+
+
+        <!-- ADD CUSTOMER FORM -->
+        <div id="addCustomerForm"
+            style="
+                display:none;
+                background:#f8fafc;
+                padding:20px;
+                border-radius:12px;
+                margin-bottom:20px;
+                border:1px solid #e2e8f0;
+            ">
+
+            <h3 style="margin-bottom:15px;">
+                Add New Customer
+            </h3>
+
+            <div style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:12px;
+            ">
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Customer Name"
+                    style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;"
+                >
+
+                <input
+                    type="email"
+                    id="customerEmail"
+                    placeholder="Email Address"
+                    style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;"
+                >
+
+                <input
+                    type="text"
+                    id="customerPhone"
+                    placeholder="Phone Number"
+                    style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;"
+                >
+
+                <input
+                    type="text"
+                    id="customerAddress"
+                    placeholder="Address"
+                    style="padding:10px; border:1px solid #e2e8f0; border-radius:8px;"
+                >
+
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+
+                <button onclick="addCustomer()"
+                    style="
+                        background:#4f46e5;
+                        color:white;
+                        border:none;
+                        padding:10px 20px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:600;
+                    ">
+                    Add Customer
+                </button>
+
+                <button onclick="hideAddCustomerForm()"
+                    style="
+                        background:#e2e8f0;
+                        color:#334155;
+                        border:none;
+                        padding:10px 20px;
+                        border-radius:8px;
+                        cursor:pointer;
+                    ">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER TABLE -->
         <div style="overflow-x:auto;">
 
             <table style="width:100%; border-collapse:collapse;">
@@ -725,21 +831,7 @@
                 </thead>
 
                 <tbody id="customersList">
-
-                    <tr>
-                        <td>#CUS001</td>
-                        <td>Sample Customer</td>
-                        <td>customer@gmail.com</td>
-                        <td>9876543210</td>
-                        <td>3</td>
-                        <td>₹2,999</td>
-                        <td>
-                            <span class="badge badge-active">
-                                Active
-                            </span>
-                        </td>
-                    </tr>
-
+                    <!-- Customers will appear here -->
                 </tbody>
 
             </table>
@@ -1410,18 +1502,58 @@ displayCart();
 
 function buyNow(productName, price) {
 
-    let customerName = prompt("Enter Customer Name:");
+    // Get Customer ID
+    let customerId = prompt("Enter Customer ID:");
 
-    if (!customerName || customerName.trim() === "") {
-        alert("Customer name is required!");
+    if (!customerId || customerId.trim() === "") {
+        alert("Customer ID is required!");
         return;
     }
 
-    let orders = JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+    customerId = customerId.trim();
 
+    // Get saved customers
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    // Find customer using Customer ID
+    let customer = customers.find(
+        c => c.id.toLowerCase() === customerId.toLowerCase()
+    );
+
+    if (!customer) {
+        alert("Customer ID not found! Please check the Customer ID.");
+        return;
+    }
+
+    // Show customer details for verification
+    let confirmCustomer = confirm(
+        "Customer Details\n\n" +
+        "Customer ID: " + customer.id + "\n" +
+        "Name: " + customer.name + "\n" +
+        "Phone: " + customer.phone + "\n" +
+        "Email: " + customer.email + "\n" +
+        "Address: " + customer.address + "\n\n" +
+        "Is this the correct customer?"
+    );
+
+    if (!confirmCustomer) {
+        alert("Order cancelled. Please check the customer details.");
+        return;
+    }
+
+    // Get existing orders
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    // Create new order
     let newOrder = {
         id: "ORD" + Date.now(),
-        customer: customerName.trim(),
+        customerId: customer.id,
+        customer: customer.name,
+        phone: customer.phone,
+        email: customer.email,
+        address: customer.address,
         product: productName,
         total: price,
         date: new Date().toLocaleDateString("en-IN"),
@@ -1431,16 +1563,29 @@ function buyNow(productName, price) {
 
     orders.push(newOrder);
 
+    // Save order
     localStorage.setItem(
         "srimathiOrders",
         JSON.stringify(orders)
     );
 
+    // Update customer order details
+    customer.totalOrders = Number(customer.totalOrders || 0) + 1;
+    customer.totalSpent = Number(customer.totalSpent || 0) + Number(price);
+
+    // Save updated customer
+    localStorage.setItem(
+        "srimathiCustomers",
+        JSON.stringify(customers)
+    );
+
     displayOrders();
     updateTotalOrders();
+    displayCustomers();
 
     alert("Order placed successfully!");
 }
+
 
 
 // ===============================
