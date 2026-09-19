@@ -363,7 +363,10 @@
             <div class="header-actions">
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8"></i>
-                    <input type="text" placeholder="Search products, orders, customers...">
+                    <input type="text"
+    id="globalSearch"
+    placeholder="Search products, orders, customers..."
+    oninput="globalSearch()">
                 </div>
                 <div class="user-profile">
                     <div class="avatar">S</div>
@@ -397,7 +400,7 @@
                 <div class="metric-icon" style="background: #ffedd5; color: #f97316;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                 <div class="metric-info">
                     <p>Total Sales</p>
-                    <h3>₹ 3,45,000</h3>
+<h3 id="totalSales">₹ 3,45,000</h3>
                     <p class="trend up">↑ 22% this month</p>
                 </div>
             </div>
@@ -405,7 +408,7 @@
                 <div class="metric-icon" style="background: #dbeafe; color: #3b82f6;"><i class="fa-solid fa-users"></i></div>
                 <div class="metric-info">
                     <p>Customers</p>
-                    <h3>680</h3>
+                    <h3 id="totalCustomers">80</h3>
                     <p class="trend up">↑ 12% this month</p>
                 </div>
             </div>
@@ -1279,7 +1282,43 @@ function updateTotalProducts() {
     }
 }
 
+document.getElementById("globalSearch").addEventListener("input", function () {
 
+    let searchText = this.value.toLowerCase().trim();
+
+    let productRows =
+        document.querySelectorAll("#productList tr, #productList2 tr");
+
+    productRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+
+    let customerRows =
+        document.querySelectorAll("#customersList tr");
+
+    customerRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+
+    let orderRows =
+        document.querySelectorAll("#ordersList tr");
+
+    orderRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+});
+
+    // Customers
+    
 // Display Products
 function displayProducts() {
 
@@ -1404,7 +1443,7 @@ if (productForm) {
 
         products.push(product);
 
-        localStorage.setItem("products", JSON.stringify(products));
+      localStorage.setItem("srimathiProducts", JSON.stringify(products));
 
         displayProducts();
         updateTotalProducts();
@@ -1611,6 +1650,7 @@ function placeOrderForCustomer(customer, productName, price) {
     displayOrders();
     displayCustomers();
     updateTotalOrders();
+    updateDashboardStats();
 
     alert("Your order is placed!");
 }
@@ -1982,6 +2022,64 @@ function updateTotalOrders() {
         totalOrders.textContent = orders.length;
     }
 }
+function globalSearch() {
+
+    let searchText =
+        document.getElementById("globalSearch").value.toLowerCase().trim();
+
+    let productRows =
+        document.querySelectorAll("#productList tr, #productList2 tr");
+
+    productRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+
+    let customerRows =
+        document.querySelectorAll("#customersList tr");
+
+    customerRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+
+    let orderRows =
+        document.querySelectorAll("#ordersList tr");
+
+    orderRows.forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(searchText)
+                ? ""
+                : "none";
+    });
+}
+function updateDashboardStats() {
+
+    // Total Sales
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let totalSales = orders.reduce(
+        (sum, order) => sum + Number(order.total || 0),
+        0
+    );
+
+    document.getElementById("totalSales").textContent =
+        "₹ " + totalSales.toLocaleString("en-IN");
+
+
+    // Total Customers
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    document.getElementById("totalCustomers").textContent =
+        customers.length;
+}
+
     </script>
 </body>
 </html>
