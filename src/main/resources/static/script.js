@@ -76,12 +76,10 @@ function login() {
 
 
     // USER
-    if (selectedRole === "user") {
-
-        window.location.href = "user-dashboard.html";
-
-        return;
-    }
+   if (selectedRole === "user") {
+    window.location.href = "user-dashboard.html";
+    return;
+}
 
 }
 
