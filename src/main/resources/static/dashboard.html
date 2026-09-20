@@ -1275,7 +1275,11 @@ function saveProducts() {
 
 // Update Total Products
 function updateTotalProducts() {
-    const total = document.getElementById("totalProducts");
+    let products =
+        JSON.parse(localStorage.getItem("srimathiProducts")) || [];
+
+    const total =
+        document.getElementById("totalProducts");
 
     if (total) {
         total.textContent = products.length;
@@ -1420,8 +1424,140 @@ function displayProducts() {
     updateTotalProducts();
 }
 
+function displayProducts() {
+
+    const productList = document.getElementById("productList");
+    const productList2 = document.getElementById("productList2");
+
+    if (productList) {
+        productList.innerHTML = "";
+    }
+
+    if (productList2) {
+        productList2.innerHTML = "";
+    }
 
 
+    products.forEach(product => {
+
+        // Dashboard Product List
+        if (productList) {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>
+                    <b>${product.name}</b>
+                </td>
+
+                <td>
+                    <span class="badge badge-cat">
+                        ${product.category}
+                    </span>
+                </td>
+
+                <td>
+                    ₹ ${product.price}
+                </td>
+
+                <td>
+                    ${product.stock}
+                </td>
+
+                <td>
+                    <span class="badge badge-active">
+                        Active
+                    </span>
+                </td>
+
+                <td>
+
+                    <button
+                        onclick="deleteProduct(${product.id})"
+                        style="border:none;
+                               background:none;
+                               color:#ef4444;
+                               cursor:pointer;">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                    </button>
+
+                </td>
+            `;
+
+            productList.appendChild(row);
+        }
+
+
+        // ALL PRODUCTS TABLE
+        if (productList2) {
+
+            const row2 = document.createElement("tr");
+
+            row2.innerHTML = `
+                <td>${product.id}</td>
+
+                <td>
+                    <b>${product.name}</b>
+                </td>
+
+                <td>
+                    ${product.category}
+                </td>
+
+                <td>
+                    ₹ ${product.price}
+                </td>
+
+                <td>
+                    ${product.stock}
+                </td>
+            `;
+
+            productList2.appendChild(row2);
+        }
+
+    });
+
+
+    updateTotalProducts();
+}
+
+function displayProductCards(searchText = "") {
+
+    const container =
+        document.getElementById("product-cards-container");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    let filteredProducts = products.filter(product => {
+
+        let text =
+            (product.name + " " + product.category)
+            .toLowerCase();
+
+        return text.includes(searchText.toLowerCase());
+    });
+
+
+    filteredProducts.forEach(product => {
+
+        container.innerHTML += `
+            <div class="card" style="padding:15px;">
+                <h3>${product.name}</h3>
+
+                <p>${product.category}</p>
+
+                <p>₹${product.price}</p>
+
+                <p>Stock: ${product.stock}</p>
+            </div>
+        `;
+    });
+}
 // ===============================
 // ADD PRODUCT
 // ===============================
@@ -1446,6 +1582,7 @@ if (productForm) {
       localStorage.setItem("srimathiProducts", JSON.stringify(products));
 
         displayProducts();
+        updateReports();
         updateTotalProducts();
 
         productForm.reset();
@@ -1497,6 +1634,7 @@ window.addEventListener("DOMContentLoaded", function() {
         // Page Load ஆகும் போது Dashboard Tab-ஐ காட்டுதல்
         window.addEventListener('DOMContentLoaded', () => {
             switchTab(null, 'all');
+            updateReports();
         });
         function addToCart(name) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -1651,6 +1789,7 @@ function placeOrderForCustomer(customer, productName, price) {
     displayCustomers();
     updateTotalOrders();
     updateDashboardStats();
+    updateReports();
 
     alert("Your order is placed!");
 }
@@ -1703,6 +1842,15 @@ function displayOrders() {
                 </td>
 
                 <td>
+                    <button onclick="completeOrder('${order.id}')"
+        style="border:none;
+               background:#dcfce7;
+               color:#16a34a;
+               padding:6px 10px;
+               border-radius:6px;
+               cursor:pointer;">
+    Complete
+</button>
                     <button onclick="deleteOrder('${order.id}')">
                         Delete
                     </button>
@@ -1778,7 +1926,8 @@ function addCustomer() {
     );
 
     displayCustomers();
-
+    updateDashboardStats();
+    updateReports();
     document.getElementById("customerName").value = "";
     document.getElementById("customerEmail").value = "";
     document.getElementById("customerPhone").value = "";
@@ -1907,7 +2056,7 @@ function updateCartCount() {
     }
 }
 function updateTotalProducts() {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
+    let products = JSON.parse(localStorage.getItem("srimathiProducts")) || [];
     document.getElementById("totalProducts").textContent = products.length;
 }
 
@@ -2006,6 +2155,32 @@ function deleteOrder(id) {
 
     alert("Order deleted successfully!");
 }
+function completeOrder(id) {
+
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let order = orders.find(
+        order => order.id === id
+    );
+
+    if (!order) {
+        return;
+    }
+
+    order.status = "Completed";
+
+    localStorage.setItem(
+        "srimathiOrders",
+        JSON.stringify(orders)
+    );
+
+    displayOrders();
+    updateTotalOrders();
+    updateReports();
+
+    alert("Order completed successfully!");
+}
 // ===============================
 // TOTAL ORDERS
 // ===============================
@@ -2027,35 +2202,48 @@ function globalSearch() {
     let searchText =
         document.getElementById("globalSearch").value.toLowerCase().trim();
 
+displayProductCards(searchText);
+    // Product List
     let productRows =
         document.querySelectorAll("#productList tr, #productList2 tr");
 
     productRows.forEach(row => {
+
+        let productText =
+            row.textContent.toLowerCase();
+
         row.style.display =
-            row.textContent.toLowerCase().includes(searchText)
+            productText.includes(searchText)
                 ? ""
                 : "none";
     });
 
+
+    // Customer List
     let customerRows =
         document.querySelectorAll("#customersList tr");
 
     customerRows.forEach(row => {
+
         row.style.display =
             row.textContent.toLowerCase().includes(searchText)
                 ? ""
                 : "none";
     });
 
+
+    // Order List
     let orderRows =
         document.querySelectorAll("#ordersList tr");
 
     orderRows.forEach(row => {
+
         row.style.display =
             row.textContent.toLowerCase().includes(searchText)
                 ? ""
                 : "none";
     });
+
 }
 function updateDashboardStats() {
 
@@ -2079,7 +2267,70 @@ function updateDashboardStats() {
     document.getElementById("totalCustomers").textContent =
         customers.length;
 }
+function updateReports() {
 
+    let orders =
+        JSON.parse(localStorage.getItem("srimathiOrders")) || [];
+
+    let customers =
+        JSON.parse(localStorage.getItem("srimathiCustomers")) || [];
+
+    let products =
+        JSON.parse(localStorage.getItem("srimathiProducts")) || [];
+
+
+    // Total Sales
+    let totalSales = orders.reduce(
+        (sum, order) => sum + Number(order.total || 0),
+        0
+    );
+
+
+    // Total Orders
+    let totalOrders = orders.length;
+
+
+    // Total Customers
+    let totalCustomers = customers.length;
+
+
+    // Total Products
+    let totalProducts = products.length;
+
+
+    // Completed Orders
+let completedOrders = orders.filter(
+    order => order.status === "Completed"
+).length;
+
+// Pending Orders
+let pendingOrders = orders.filter(
+    order => order.status === "Pending"
+).length;
+
+
+// Display Reports
+document.getElementById("reportSales").textContent =
+    "₹" + totalSales.toLocaleString("en-IN");
+
+document.getElementById("reportOrders").textContent =
+    totalOrders;
+
+document.getElementById("reportCustomers").textContent =
+    totalCustomers;
+
+document.getElementById("reportProducts").textContent =
+    totalProducts;
+
+document.getElementById("totalRevenue").textContent =
+    "₹" + totalSales.toLocaleString("en-IN");
+
+document.getElementById("completedOrders").textContent =
+    completedOrders;
+
+document.getElementById("pendingOrders").textContent =
+    pendingOrders;
+}
     </script>
 </body>
 </html>
