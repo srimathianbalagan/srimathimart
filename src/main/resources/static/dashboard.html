@@ -1116,64 +1116,145 @@ async function fetchAccurateImages(query, count = 10) {
 }
 
 // 4. சப்-கேட்டகிரி கிளிக் செய்ததும் சரியாக 10 பொருட்களைக் காட்டும் ஃபங்ஷன்
+// Sub-category click செய்ததும் photo இல்லாமல் 10 products காட்டும் function
 async function filterBySubCategory(mainCategory, subCategory) {
-    let cardsContainer = document.getElementById('product-cards-container');
+
+    let cardsContainer =
+        document.getElementById('product-cards-container');
+
     if (!cardsContainer) return;
-    
-    // லோடிங் உரை
-    cardsContainer.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #6366f1; font-size: 14px; font-weight: 600;">படங்கள் லோட் ஆகிறது...</div>';
 
-    let searchQuery = subCategory === 'All' ? mainCategory : subCategory;
-    
-    // துல்லியமான படங்களை தானாகவே பெறுகிறது
-    let images = await fetchAccurateImages(searchQuery, 10);
+    cardsContainer.innerHTML = '';
 
-    cardsContainer.innerHTML = ''; // பழைய கார்டுகளை நீக்க
+    let searchQuery =
+        subCategory === 'All' ? mainCategory : subCategory;
 
-    // 10 பொருட்களுக்கு மட்டும் Loop ஓடும்
+    // 10 products காட்டுதல்
     for (let i = 0; i < 10; i++) {
-        let originalPrice = Math.floor(Math.random() * 2500) + 999;
-        let discountPercent = Math.floor(Math.random() * 30) + 15;
-        let discountedPrice = Math.round(originalPrice - (originalPrice * discountPercent / 100));
-        let stockCount = Math.floor(Math.random() * 20) + 1;
-        
-        let imgUrl = images[i] || `https://picsum.photos/seed/${searchQuery}${i}/400/300`;
-        let fallbackUrl = `https://picsum.photos/seed/${searchQuery}${i}/400/300`;
+
+        let originalPrice =
+            Math.floor(Math.random() * 2500) + 999;
+
+        let discountPercent =
+            Math.floor(Math.random() * 30) + 15;
+
+        let discountedPrice =
+            Math.round(
+                originalPrice -
+                (originalPrice * discountPercent / 100)
+            );
+
+        let stockCount =
+            Math.floor(Math.random() * 20) + 1;
 
         let cardHTML = `
-            <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; background: #ffffff; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                <span style="position: absolute; top: 10px; left: 10px; background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; z-index: 1;">
+            <div style="
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 15px;
+                background: #ffffff;
+                position: relative;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            ">
+
+                <span style="
+                    background: #ef4444;
+                    color: white;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    font-weight: bold;
+                ">
                     ${discountPercent}% OFF
                 </span>
 
-                <img src="${imgUrl}" 
-                     onerror="this.onerror=null; this.src='${fallbackUrl}';"
-                     alt="${searchQuery} ${i+1}" 
-                     style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #f1f5f9;">
-
-                <h4 style="font-size: 13px; margin: 5px 0; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    Trendy ${searchQuery} Option #${i+1}
+                <h4 style="
+                    font-size: 13px;
+                    margin: 15px 0 8px;
+                    color: #1e293b;
+                ">
+                    Trendy ${searchQuery} Option #${i + 1}
                 </h4>
 
                 <div style="margin-bottom: 5px;">
-                    <span style="font-size: 15px; font-weight: bold; color: #059669;">₹${discountedPrice}</span>
-                    <span style="font-size: 11px; color: #94a3b8; text-decoration: line-through; margin-left: 5px;">₹${originalPrice}</span>
+                    <span style="
+                        font-size: 15px;
+                        font-weight: bold;
+                        color: #059669;
+                    ">
+                        ₹${discountedPrice}
+                    </span>
+
+                    <span style="
+                        font-size: 11px;
+                        color: #94a3b8;
+                        text-decoration: line-through;
+                        margin-left: 5px;
+                    ">
+                        ₹${originalPrice}
+                    </span>
                 </div>
 
-                <div style="font-size: 11px; color: ${stockCount < 5 ? '#dc2626' : '#64748b'}; margin-bottom: 8px; font-weight: 500;">
-                    ${stockCount < 5 ? `Only ${stockCount} left!` : `In Stock: ${stockCount}`}
+                <div style="
+                    font-size: 11px;
+                    color: ${stockCount < 5 ? '#dc2626' : '#64748b'};
+                    margin-bottom: 12px;
+                    font-weight: 500;
+                ">
+                    ${
+                        stockCount < 5
+                            ? `Only ${stockCount} left!`
+                            : `In Stock: ${stockCount}`
+                    }
                 </div>
 
-                <div style="display: flex; gap: 4px;">
-                   <button onclick="addToCart('${searchQuery} #${i+1}')"style="flex: 1; padding: 6px 0; border: 1px solid #4f46e5; background: white; color: #4f46e5; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">Add to Cart</button>
-                    <button onclick="buyNow('${searchQuery} #${i+1}', ${discountedPrice})" style="flex: 1; padding: 6px 0; border: none; background: #4f46e5; color: white; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer;">Buy Now</button>
+                <div style="
+                    display: flex;
+                    gap: 5px;
+                ">
+
+                    <button
+                        onclick="addToCart('${searchQuery} #${i + 1}')"
+                        style="
+                            flex: 1;
+                            padding: 7px 0;
+                            border: 1px solid #4f46e5;
+                            background: white;
+                            color: #4f46e5;
+                            border-radius: 6px;
+                            font-size: 10px;
+                            font-weight: 600;
+                            cursor: pointer;
+                        "
+                    >
+                        Add to Cart
+                    </button>
+
+                    <button
+                        onclick="buyNow('${searchQuery} #${i + 1}', ${discountedPrice})"
+                        style="
+                            flex: 1;
+                            padding: 7px 0;
+                            border: none;
+                            background: #4f46e5;
+                            color: white;
+                            border-radius: 6px;
+                            font-size: 10px;
+                            font-weight: 600;
+                            cursor: pointer;
+                        "
+                    >
+                        Buy Now
+                    </button>
+
                 </div>
-            </div>`;
-        
+
+            </div>
+        `;
+
         cardsContainer.innerHTML += cardHTML;
     }
 }
-
 
         // API அல்லது Local Table-ஐ Filter செய்யும் கம்பைன்ட் Function
         async function fetchAndFilterProducts(category) {
@@ -1582,6 +1663,7 @@ if (productForm) {
       localStorage.setItem("srimathiProducts", JSON.stringify(products));
 
         displayProducts();
+        displayProductCards();
         updateReports();
         updateTotalProducts();
 
