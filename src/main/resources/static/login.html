@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Srimathi Mart - Login</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,12 +17,42 @@
 
         <p>Welcome Back!</p>
 
+        <label>Login As</label>
+
+        <div style="
+            display:flex;
+            gap:10px;
+            margin:10px 0 15px;
+        ">
+
+            <button
+                type="button"
+                onclick="selectRole('admin')"
+                id="adminBtn">
+
+                👩 Admin
+
+            </button>
+
+            <button
+                type="button"
+                onclick="selectRole('user')"
+                id="userBtn">
+
+                👤 User
+
+            </button>
+
+        </div>
+
+
         <label>Email</label>
 
         <input
             type="email"
             id="email"
             placeholder="Enter your email">
+
 
         <label>Password</label>
 
@@ -28,9 +61,15 @@
             id="password"
             placeholder="Enter your password">
 
-        <button onclick="login()">
+
+        <button
+            type="button"
+            onclick="login()">
+
             LOGIN
+
         </button>
+
 
         <p>
             New user?
@@ -38,6 +77,7 @@
         </p>
 
     </div>
+
 
     <script src="script.js"></script>
 

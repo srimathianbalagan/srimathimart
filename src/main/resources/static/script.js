@@ -1,14 +1,88 @@
+// Login Role
+let selectedRole = "";
+
+
+// Select Admin / User
+function selectRole(role) {
+
+    selectedRole = role;
+
+    const adminBtn = document.getElementById("adminBtn");
+    const userBtn = document.getElementById("userBtn");
+
+    if (role === "admin") {
+
+        if (adminBtn) {
+            adminBtn.style.backgroundColor = "#4f46e5";
+            adminBtn.style.color = "white";
+        }
+
+        if (userBtn) {
+            userBtn.style.backgroundColor = "";
+            userBtn.style.color = "";
+        }
+
+    }
+
+    if (role === "user") {
+
+        if (userBtn) {
+            userBtn.style.backgroundColor = "#4f46e5";
+            userBtn.style.color = "white";
+        }
+
+        if (adminBtn) {
+            adminBtn.style.backgroundColor = "";
+            adminBtn.style.color = "";
+        }
+
+    }
+}
+
+
 // Login Function
 function login() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
 
-    if (email === "" || password === "") {
-        alert("Please enter email and password");
+    let email =
+        document.getElementById("email").value.trim();
+
+    let password =
+        document.getElementById("password").value.trim();
+
+
+    if (selectedRole === "") {
+
+        alert("Please select Admin or User");
+
         return;
     }
 
-    window.location.href = "dashboard.html";
+
+    if (email === "" || password === "") {
+
+        alert("Please enter email and password");
+
+        return;
+    }
+
+
+    // ADMIN
+    if (selectedRole === "admin") {
+
+        window.location.href = "dashboard.html";
+
+        return;
+    }
+
+
+    // USER
+    if (selectedRole === "user") {
+
+        window.location.href = "user-dashboard.html";
+
+        return;
+    }
+
 }
 
 // Register Form Event Listener
