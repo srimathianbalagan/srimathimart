@@ -17,7 +17,10 @@ public class OrderController {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
     }
-
+@GetMapping
+public List<Order> getAllOrders() {
+    return orderRepository.findAll();
+}
     // Cart-ல் உள்ள பொருட்களை Order ஆக மாற்றி Mock Payment நிறைவு செய்ய
     @PostMapping("/checkout/{userId}")
     public Order placeOrder(@PathVariable Long userId) {
