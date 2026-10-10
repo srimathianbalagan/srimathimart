@@ -41,48 +41,50 @@ function selectRole(role) {
 
 
 // Login Function
-function login() {
-
-    let email =
-        document.getElementById("email").value.trim();
-
-    let password =
-        document.getElementById("password").value.trim();
-
+// Login Function
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
     if (selectedRole === "") {
-
         alert("Please select Admin or User");
-
         return;
     }
-
 
     if (email === "" || password === "") {
-
         alert("Please enter email and password");
-
         return;
     }
 
+    try {
+        const response = await fetch("http://localhost:8080/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
 
-    // ADMIN
-    if (selectedRole === "admin") {
+        const result = await response.text();
 
-        window.location.href = "dashboard.html";
+        if (response.ok && result.trim() === "Login Successful!") {
+            if (selectedRole === "admin") {
+                window.location.href = "dashboard.html";
+            } else {
+                window.location.href = "user-dashboard.html";
+            }
+        } else {
+            alert("Invalid Email ID or Password!");
+        }
 
-        return;
+    } catch (error) {
+        console.error("Login Error:", error);
+        alert("Backend connection failed. Please check the server.");
     }
-
-
-    // USER
-   if (selectedRole === "user") {
-    window.location.href = "user-dashboard.html";
-    return;
 }
-
-}
-
 // Register Form Event Listener
 document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
