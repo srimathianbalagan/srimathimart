@@ -88,18 +88,29 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
     e.preventDefault();
     const email = document.getElementById('regEmail').value;
     const password = document.getElementById('regPassword').value;
+try {
+    const response = await fetch('http://localhost:8080/api/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email.trim(),
+            password: password
+        })
+    });
 
-    try {
-        const response = await fetch('http://localhost:8081/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, password: password })
-        });
-        const result = await response.text();
-        document.getElementById('regMessage').innerText = result;
-    } catch (error) {
-        console.error("Register Error:", error);
-    }
+    const result = await response.text();
+
+    document.getElementById('regMessage').innerText =
+        response.ok ? result : `Registration failed: ${result}`;
+
+} catch (error) {
+    console.error("Register Error:", error);
+
+    document.getElementById('regMessage').innerText =
+        "Backend connection failed. Please check whether the server is running.";
+}
 });
 
 // Add Product Form Listener
