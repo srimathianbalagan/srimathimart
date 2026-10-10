@@ -1,86 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Srimathi Mart - Login</title>
 
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 410px;
+            padding: 38px 34px;
+            background: #ffffff;
+            border: 1px solid #e5edfa;
+            border-radius: 20px;
+            box-shadow: 0 20px 55px rgba(30, 64, 175, 0.12);
+        }
+
+        .brand-icon {
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: #eff6ff;
+            font-size: 30px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            color: #172554;
+            font-size: 27px;
+            letter-spacing: -0.7px;
+            margin-bottom: 8px;
+        }
+
+        .welcome {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 17px 0 8px;
+        }
+
+        .role-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .login-box .role-options button {
+            flex: 1;
+            padding: 12px 8px;
+            border: 1px solid #dbe3ef;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .login-box .role-options button:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe3ef;
+            border-radius: 10px;
+            outline: none;
+            background: #f8fafc;
+            color: #0f172a;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .login-box input:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .login-box .login-submit {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .login-box .login-submit:hover {
+            background: #1d4ed8;
+            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .register-text {
+            margin-top: 23px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .register-text a {
+            color: #2563eb;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 420px) {
+            .login-box {
+                padding: 30px 23px;
+            }
+
+            .login-box h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <div class="login-box">
 
-        <h1>🛒 Srimathi Mart</h1>
+        <div class="brand-icon">🛍️</div>
 
-        <p>Welcome Back!</p>
+        <h1>Srimathi Mart</h1>
+        <p class="welcome">Welcome back! Sign in to continue.</p>
 
         <label>Login As</label>
 
-        <div style="
-            display:flex;
-            gap:10px;
-            margin:10px 0 15px;
-        ">
-
-            <button
-                type="button"
-                onclick="selectRole('admin')"
-                id="adminBtn">
-
+        <div class="role-options">
+            <button type="button"
+                    onclick="selectRole('admin')"
+                    id="adminBtn">
                 👩 Admin
-
             </button>
 
-            <button
-                type="button"
-                onclick="selectRole('user')"
-                id="userBtn">
-
+            <button type="button"
+                    onclick="selectRole('user')"
+                    id="userBtn">
                 👤 User
-
             </button>
-
         </div>
 
+        <label for="email">Email Address</label>
+        <input type="email"
+               id="email"
+               placeholder="Enter your email"
+               autocomplete="email">
 
-        <label>Email</label>
+        <label for="password">Password</label>
+        <input type="password"
+               id="password"
+               placeholder="Enter your password"
+               autocomplete="current-password">
 
-        <input
-            type="email"
-            id="email"
-            placeholder="Enter your email">
-
-
-        <label>Password</label>
-
-        <input
-            type="password"
-            id="password"
-            placeholder="Enter your password">
-
-
-        <button
-            type="button"
-            onclick="login()">
-
-            LOGIN
-
+        <button type="button"
+                class="login-submit"
+                onclick="login()">
+            SIGN IN →
         </button>
 
-
-        <p>
-            New user?
-            <a href="register.html">Register</a>
+        <p class="register-text">
+            New to Srimathi Mart?
+            <a href="register.html">Create an account</a>
         </p>
 
     </div>
 
-
     <script src="script.js"></script>
 
 </body>
-
 </html>
