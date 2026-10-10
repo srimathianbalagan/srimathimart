@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Srmathi Mart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Sign Up</h2>
+        <form id="registerForm">
+            <input type="email" id="regEmail" placeholder="Enter Email" required><br><br>
+            <input type="password" id="regPassword" placeholder="Enter Password" required><br><br>
+            <button type="submit">Register</button>
+        </form>
+        <p id="regMessage"></p>
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

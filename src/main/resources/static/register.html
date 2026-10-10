@@ -2,19 +2,292 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register - Srmathi Mart</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Srimathi Mart</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background: #f6f4fb;
+            color: #25213b;
+        }
+
+        .register-layout {
+            width: 100%;
+            max-width: 940px;
+            min-height: 540px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(40, 25, 75, 0.10);
+        }
+
+        .brand-panel {
+            background: linear-gradient(145deg, #30205f, #7053a8);
+            color: white;
+            padding: 48px 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 750;
+            letter-spacing: 0.4px;
+        }
+
+        .brand span {
+            color: #e4d5ff;
+        }
+
+        .brand-content {
+            margin: 50px 0;
+        }
+
+        .brand-content .eyebrow {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #e4d5ff;
+            margin-bottom: 18px;
+        }
+
+        .brand-content h1 {
+            font-size: 37px;
+            line-height: 1.25;
+            margin-bottom: 18px;
+        }
+
+        .brand-content p {
+            color: #e4dcef;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .brand-footer {
+            font-size: 12px;
+            color: #e4dcef;
+        }
+
+        .form-panel {
+            padding: 55px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #8b72b6;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .form-panel h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #29213e;
+        }
+
+        .subtitle {
+            color: #858092;
+            font-size: 14px;
+            margin-bottom: 34px;
+            line-height: 1.7;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 49px;
+            border: 1px solid #e5e0ee;
+            border-radius: 10px;
+            padding: 0 15px;
+            font-size: 14px;
+            outline: none;
+            background: #fcfbfe;
+            transition: 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #8061b5;
+            box-shadow: 0 0 0 3px rgba(128, 97, 181, 0.10);
+            background: white;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .register-button {
+            width: 100%;
+            height: 49px;
+            border: none;
+            border-radius: 10px;
+            background: #5a3d8e;
+            color: white;
+            font-size: 15px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 5px;
+        }
+
+        .register-button:hover {
+            background: #43296f;
+            transform: translateY(-1px);
+        }
+
+        #regMessage {
+            font-size: 13px;
+            margin-top: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .login-text {
+            text-align: center;
+            margin-top: 26px;
+            color: #858092;
+            font-size: 13px;
+        }
+
+        .login-text a {
+            color: #67459d;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .login-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 14px;
+            }
+
+            .register-layout {
+                grid-template-columns: 1fr;
+                max-width: 430px;
+            }
+
+            .brand-panel {
+                padding: 25px 27px;
+            }
+
+            .brand-content {
+                margin: 30px 0 10px;
+            }
+
+            .brand-content h1 {
+                font-size: 27px;
+            }
+
+            .brand-content p,
+            .brand-footer {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 35px 27px;
+            }
+
+            .form-panel h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="login-container">
-        <h2>Sign Up</h2>
-        <form id="registerForm">
-            <input type="email" id="regEmail" placeholder="Enter Email" required><br><br>
-            <input type="password" id="regPassword" placeholder="Enter Password" required><br><br>
-            <button type="submit">Register</button>
-        </form>
-        <p id="regMessage"></p>
-        <p>Already have an account? <a href="login.html">Login here</a></p>
+    <div class="register-layout">
+
+        <section class="brand-panel">
+            <div class="brand">Srimathi <span>Mart.</span></div>
+
+            <div class="brand-content">
+                <p class="eyebrow">YOUR SHOPPING SPACE</p>
+                <h1>Good things<br>start here.</h1>
+                <p>
+                    Create your account and enjoy a simpler,
+                    smoother shopping experience with Srimathi Mart.
+                </p>
+            </div>
+
+            <div class="brand-footer">
+                A little joy in every purchase.
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <p class="form-label">GET STARTED</p>
+            <h2>Create account</h2>
+            <p class="subtitle">
+                Enter your details below to get started.
+            </p>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="field-label" for="regEmail">
+                        Email address
+                    </label>
+                    <input
+                        type="email"
+                        id="regEmail"
+                        class="input-field"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="field-label" for="regPassword">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        id="regPassword"
+                        class="input-field"
+                        placeholder="Enter your password"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="register-button">
+                    Create account →
+                </button>
+            </form>
+
+            <p id="regMessage" role="status"></p>
+
+            <p class="login-text">
+                Already have an account?
+                <a href="login.html">Sign in</a>
+            </p>
+        </section>
+
     </div>
 
     <script src="script.js"></script>
